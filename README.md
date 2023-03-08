@@ -1,107 +1,261 @@
-# This repo is no longer maintained. Consider using `npm init vite` and selecting the `svelte` option or — if you want a full-fledged app framework and don't mind using pre-1.0 software — use [SvelteKit](https://kit.svelte.dev), the official application framework for Svelte.
+# FRONTEND (con Svelte)
 
 ---
 
-# svelte app
+# Introducción
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+Este es el frontend de una aplicación, la cual consta de un repositorio donde se aloja el [backend](https://github.com/PabloGarciaa7/tiendabackend) y este repositorio el [frontend](https://github.com/PabloGarciaa7/tiendafrontend)
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+# Proyecto
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
+El proyecto consiste en una tienda de videojuegos y videoconsolas. En el backend podemos ver la api y la documentación.
+
+![GitHub Logo](/public/img/back.png)
+
+La parte de frontend se ha creado con Svelte.
+
+Si usamos el comando `tree`, esta es la estructura que tendria
+
+```
+├───public
+│   └───img
+├───scripts
+└───src
+```
+En public se aloja todo lo relativo a la parte de estilos, y el propio html y en src, es donde se trabajará con Svelte. Svelte trabaja por componentes y en esta carpeta se crearán todos los componentes a utilizar, donde `App.svelte` será el componente principal de la aplicación.
+
+Cada componente dispone de 3 secciones:
+
+```html
+<script>
+  // Código javascript
+</script>
+
+<!-- Nuestros elementos HTML y componentes web -->
+
+<style>
+  /* Código CSS */
+</style>
 ```
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+El orden es indiferente.
 
+La estructura del componente `App` está formada por un `Router`, dentro del cual se definen dos componentes: `Nav`, que tendrá los enlaces (`Link`) necesarios para la navegación, y `Contenido`, que tendrá las rutas (`Routes`) a los componentes necesarios.
 
-## Get started
+**`Nav.svelte`**
 
-Install the dependencies...
+```html
+<script>
+    import { Link } from "svelte-routing";
+</script>
 
-```bash
-cd svelte-app
-npm install
+<nav>
+	<ul>
+		<li><Link to="/">Inicio</Link></li>
+		<li><Link to="/videoconsolas">Videoconsolas</Link></li>
+		<li><Link to="/videojuegos" >Videojuegos</Link></li>
+	</ul>
+</nav>
+
+<style>
+    /* Aquí el código CSS para diseño responsive de la barra de navegación. */
+    /* Consultar el código fuente */
+</style>
 ```
 
-...then start [Rollup](https://rollupjs.org):
+El componente `Nav` será la barra de navegación (`nav`), con los enlaces a las rutas del lado cliente. Para los enlaces hacemos uso del componente `Link` del paquete `svelte-routing`.
 
-```bash
-npm run dev
+**`Contenido.svelte`**
+
+```html
+<script>
+    import { Route } from "svelte-routing";
+    import Videoconsolas from "./Videoconsolas.svelte";
+    import Videojuegos from "./Videojuegos.svelte";
+    import Inicio from "./Inicio.svelte";
+</script>
+<main>
+    <Route path="/" component="{Inicio}"></Route>
+    <Route path="/videoconsolas" component="{Videoconsolas}"></Route>
+    <Route path="/videojuegos" component="{Videojuegos}"></Route>
+</main>
 ```
 
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+El componente `Contenido` será la sección principal (`main`), con las rutas y el componente asociado a cada una de ellas. Para las rutas hacemos uso del componente `Route` del paquete `svelte-routing`.
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+## Componentes para el contenido
 
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
+Dentro del componente anterior `Contenido` podrán renderizarse distintos componentes, dependiendo del `Link` que pulsemos en la barra de navegación. Los componentes que podrán aparecer en `Contenido` son:
 
-## Building and running in production mode
+- **Inicio**
+- **Videoconsolas**
+- **Videojuegos**
 
-To create an optimised version of the app:
+**`Inicio.svelte`**
 
-```bash
-npm run build
+```html
+<script>
+    import { Link } from "svelte-routing";
+</script>
+<h1 class="titulo">Tienda Gamer <img src="/img/videojuego.png" alt="consola" class="icons"></h1>
+
+<hr>
+
+<Link to="/videoconsolas">
+    <div class="opcion">Operaciones CRUD con Videoconsolas <img src="/img/videoconsola.png" alt="consola" class="icons"></div>
+</Link>
+
+<Link to="/videojuegos">
+    <div class="opcion">Operaciones CRUD con Videojuegos <img src="/img/videojuego2.png" alt="videojuego" class="icons"></div>
+</Link>
+
+
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+**`Videoconsolas.svelte`**
 
+ ```html
+ <script>
+  import { getContext } from "svelte";
+  import { onMount } from "svelte";
 
-## Single-page app mode
+  import Videoconsola from "./Videoconsola.svelte";
+  import Boton from "./Boton.svelte";
+  import Buscar from "./Buscar.svelte";
+  import { data } from "./store.js";
+  let videoconsolaInsertar = {};
 
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
+  let datosFiltrados = [];
+  let patron = "";
+  const URL = getContext("URL");
 
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
+  let getVideoconsolas = async () => {
+    const response = await fetch(URL.videoconsolas);
+    $data = await response.json();
+  };
 
-```js
-"start": "sirv public --single"
+  onMount(getVideoconsolas);
+
+  $: datosFiltrados = $data.filter((videoconsola) =>
+    RegExp(patron, "i").test(videoconsola.nombre)
+  );
+</script>
+
+<h1 class="titulo">Videoconsolas <img src="/img/videoconsola.png" alt="consola" class="icons"></h1>
+<div class="busqueda">
+  Buscar:
+  <Buscar bind:busqueda={patron} />
+</div>
+
+<hr />
+
+<div class="container">
+  <Videoconsola bind:videoconsola={videoconsolaInsertar}>
+    <div style="text-align: right">
+      <Boton coleccion="videoconsolas" documento={videoconsolaInsertar} />
+    </div>
+  </Videoconsola>
+</div>
+
+<div class="container">
+  {#each datosFiltrados as videoconsola}
+    <Videoconsola bind:videoconsola>
+      <div style="text-align: right">
+        <Boton
+          coleccion="videoconsolas"
+          tipo="modificar"
+          documento={videoconsola}
+        />
+        <Boton
+          coleccion="videoconsolas"
+          tipo="eliminar"
+          documento={videoconsola}
+        />
+      </div>
+    </Videoconsola>
+  {/each}
+</div>
+
+<style>
+  .container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    flex-wrap: wrap;
+  }
+</style>
+
 ```
 
-## Using TypeScript
 
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
 
-```bash
-node scripts/setupTypeScript.js
-```
+**`Videojuegos.svelte`**
 
-Or remove the script via:
+```html
+<script>
+  import { getContext } from "svelte";
+  import { onMount } from "svelte";
 
-```bash
-rm scripts/setupTypeScript.js
-```
+  import Videojuego from "./Videojuego.svelte";
+  import Boton from "./Boton.svelte";
+  import Buscar from "./Buscar.svelte";
 
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
+  import { data } from "./store.js";
 
-## Deploying to the web
+  let videojuegoInsertar = {};
 
-### With [Vercel](https://vercel.com)
+  let datosFiltrados = [];
+  let patron = "";
+  const URL = getContext("URL");
 
-Install `vercel` if you haven't already:
+  let getVideojuegos = async () => {
+    const response = await fetch(URL.videojuegos);
+    $data = await response.json();
+  };
 
-```bash
-npm install -g vercel
-```
+  onMount(getVideojuegos);
 
-Then, from within your project folder:
+  $: datosFiltrados = $data.filter((videojuego) =>
+    RegExp(patron, "i").test(videojuego.titulo)
+  );
+</script>
 
-```bash
-cd public
-vercel deploy --name my-project
-```
+<h1 class="titulo">Videojuegos <img src="/img/videojuego2.png" alt="videojuego" class="icons"></h1>
+<div class="busqueda">
+  Buscar:
+  <Buscar bind:busqueda={patron} />
+</div>
 
-### With [surge](https://surge.sh/)
+<hr />
 
-Install `surge` if you haven't already:
+<div class="container">
+  <Videojuego bind:videojuego={videojuegoInsertar}>
+    <div style="text-align: right">
+      <Boton documento={videojuegoInsertar} />
+    </div>
+  </Videojuego>
+</div>
 
-```bash
-npm install -g surge
-```
+<div class="container">
+  {#each datosFiltrados as videojuego}
+    <Videojuego bind:videojuego>
+      <div style="text-align: right">
+        <Boton tipo="modificar" documento={videojuego} />
+        <Boton tipo="eliminar" documento={videojuego} />
+      </div>
+    </Videojuego>
+  {/each}
+</div>
 
-Then, from within your project folder:
+<style>
+  .container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    flex-wrap: wrap;
+  }
+</style>
 
-```bash
-npm run build
-surge public my-project.surge.sh
 ```
