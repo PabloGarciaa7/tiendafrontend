@@ -264,11 +264,11 @@ Tras tener toda la aplicación acabada, se ha desplegado en Vercel [https://tien
 
 ### Inicio
 
-![GitHub Logo](Inicio.png)
+![GitHub Logo](Iniciomd.png)
 
 ### Videoconsolas
 
-![GitHub Logo](Videoconsolasmd.png)
+![GitHub Logo](Videoconsolamd.png)
 
 ### Videojuegos
 
