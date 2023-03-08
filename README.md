@@ -10,7 +10,7 @@ Este es el frontend de una aplicación, la cual consta de un repositorio donde s
 
 El proyecto consiste en una tienda de videojuegos y videoconsolas. En el backend podemos ver la api y la documentación.
 
-![GitHub Logo](/public/img/back.png)
+![GitHub Logo](backend.png)
 
 La parte de frontend se ha creado con Svelte.
 
@@ -259,3 +259,17 @@ Dentro del componente anterior `Contenido` podrán renderizarse distintos compon
 </style>
 
 ```
+
+Tras tener toda la aplicación acabada, se ha desplegado en Vercel [https://tiendajuegosfrontend.vercel.app/](https://tiendajuegosfrontend.vercel.app/) y este seria el aspecto final: 
+
+### Inicio
+
+![GitHub Logo](Inicio.png)
+
+### Videoconsolas
+
+![GitHub Logo](Videoconsolasmd.png)
+
+### Videojuegos
+
+![GitHub Logo](Videojuegosmd.png)
