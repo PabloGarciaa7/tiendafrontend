@@ -13,7 +13,7 @@ body {
 }
 
 a {
-	color: rgb(0,100,200);
+	color: rgb(200, 255, 0);
 	text-decoration: none;
 }
 
@@ -22,7 +22,7 @@ a:hover {
 }
 
 a:visited {
-	color: rgb(0,80,160);
+	color: rgb(200, 255, 0);
 }
 
 label {
@@ -70,7 +70,7 @@ button:focus {
   }
 
 a:hover{
-	color: white;
+	color: rgb(0, 0, 0);
 }
 .opcion{
 	margin: 20px;
